@@ -1,4 +1,4 @@
-import { Controller, Get, Header } from '@nestjs/common';
+import { Controller, Get, Header, Param } from '@nestjs/common';
 import { AppService } from './app.service';
 
 //localhost:3000/
@@ -13,8 +13,8 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  // @Get("'/:id'")
-  // getSingle(@Path2D('id') id: string): { name: string } {
-  //   return this.appService.getHello();
+  // @Get('/:id')
+  // getSingle(@Param('id') id: string): { name: string; id: string } {
+  //   return { id: id, name: 'test' };
   // }
 }
