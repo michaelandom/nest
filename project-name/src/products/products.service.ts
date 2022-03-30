@@ -30,7 +30,6 @@ export class ProductsService {
       updatedProduct.price = price;
     }
     this.products[productIndex] = updatedProduct;
-
     return { ...updatedProduct };
   }
 
