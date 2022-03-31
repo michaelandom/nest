@@ -1,11 +1,15 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Product } from './product.module';
+import { Product } from 'src/dto/create-products.dto';
 @Injectable()
 export class ProductsService {
   products: Product[] = [];
   insertProduct(title: string, des: string, price: number) {
     const productId = Math.random().toString();
-    const newProduct = new Product(productId, title, des, price);
+    const newProduct = new Product();
+    newProduct.id = productId;
+    newProduct.title = title;
+    newProduct.description = des;
+    newProduct.price = price;
     this.products.push(newProduct);
     return productId;
   }
@@ -17,6 +21,7 @@ export class ProductsService {
 
     return { ...product };
   }
+
   updateSingle(id: string, title: string, des: string, price: number) {
     const [product, productIndex] = this.findProduct(id);
     const updatedProduct = { ...product };

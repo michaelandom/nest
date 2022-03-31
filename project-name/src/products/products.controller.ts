@@ -7,43 +7,48 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { Product } from './product.module';
+import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { Product } from 'src/dto/create-products.dto';
+import {
+  ProductResponse,
+  ProductResponseCreated,
+} from 'src/entites/products.entites';
 import { ProductsService } from './products.service';
+@ApiTags('products')
 @Controller('products')
 export class ProductController {
   constructor(private readonly productsService: ProductsService) {}
-
+  @ApiOkResponse({ type: ProductResponse, isArray: true })
   @Get()
   // @Header('Content-type', 'text/html')
-  getProducts() {
+  getProducts(): ProductResponse[] {
     return this.productsService.getProducts();
   }
 
   @Post()
-  addProduct(
-    @Body('title') prodTitle: string,
-    @Body('description') prodDescription: string,
-    @Body('price') prodPrice: number,
-  ): any {
+  @ApiCreatedResponse({ type: ProductResponseCreated })
+  addProduct(@Body() body: Product): ProductResponseCreated {
     const genId = this.productsService.insertProduct(
-      prodTitle,
-      prodDescription,
-      prodPrice,
+      body.title,
+      body.description,
+      body.price,
     );
     return { id: genId };
   }
 
   @Get(':id')
-  getSingle(@Param('id') id: string): Product {
+  @ApiOkResponse({ type: ProductResponse })
+  getSingle(@Param('id') id: string): ProductResponse {
     return this.productsService.getSingle(id);
   }
   @Patch(':id')
+  @ApiOkResponse({ type: ProductResponse })
   updateSingle(
     @Param('id') id: string,
     @Body('title') prodTitle: string,
     @Body('description') prodDescription: string,
     @Body('price') prodPrice: number,
-  ): Product {
+  ): ProductResponse {
     return this.productsService.updateSingle(
       id,
       prodTitle,
@@ -52,7 +57,8 @@ export class ProductController {
     );
   }
   @Delete(':id')
-  deleteProduct(@Param('id') id: string): Product {
+  @ApiOkResponse({ type: ProductResponse })
+  deleteProduct(@Param('id') id: string): ProductResponse {
     return this.productsService.deleteProduct(id);
   }
 }
