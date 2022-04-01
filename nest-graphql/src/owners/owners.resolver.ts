@@ -27,7 +27,7 @@ export class OwnersResolver {
     return this.ownersService.findAll();
   }
   @ResolveField((returns) => [Pet])
-  getPets(@Parent() owner: Owner): Promise<Pet[]> {
+  pet(@Parent() owner: Owner): Promise<Pet[]> {
     return this.ownersService.getPets(owner.id);
   }
   @Query(() => Owner, { name: 'owner' })
