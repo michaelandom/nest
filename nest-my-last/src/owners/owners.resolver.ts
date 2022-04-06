@@ -12,6 +12,8 @@ import { Owner } from './entities/owner.entity';
 import { CreateOwnerInput } from './dto/create-owner.input';
 import { UpdateOwnerInput } from './dto/update-owner.input';
 import { Pet } from 'src/pets/entities/pets.entity';
+import { Query as Q } from '@nestjs/common';
+import { FilterOwnerInput } from './dto/filter-owner.input';
 
 @Resolver(() => Owner)
 export class OwnersResolver {
@@ -23,7 +25,10 @@ export class OwnersResolver {
   }
 
   @Query(() => [Owner])
-  findAllOwner() {
+  findAllOwner(@Args('FilterOwnerInput') filterOwnerInput?: FilterOwnerInput) {
+    if (filterOwnerInput) {
+      return this.ownersService.findAllOwner(filterOwnerInput.name);
+    }
     return this.ownersService.findAllOwner();
   }
 

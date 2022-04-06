@@ -20,10 +20,10 @@ export class OwnersService {
     return this.ownersRepository.save(owner);
   }
 
-  async findAllOwner(): Promise<Owner[]> {
-    // if (name) {
-    //   return this.ownersRepository.find({ name: name });
-    // }
+  async findAllOwner(name?: string): Promise<Owner[]> {
+    if (name) {
+      return this.ownersRepository.find({ name: name });
+    }
     return this.ownersRepository.find();
   }
 
@@ -48,7 +48,7 @@ export class OwnersService {
 
   async remove(id: number): Promise<Owner> {
     const owner = await this.ownersRepository.findOneOrFail(id);
-    this.ownersRepository.delete(owner);
+    await this.ownersRepository.delete(owner);
     return owner;
   }
 }

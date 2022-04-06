@@ -19,8 +19,12 @@ type Owner {
 type Query {
   getAllPets: [Pet!]!
   getPetById(id: Int!): Pet!
-  findAllOwner: [Owner!]!
+  findAllOwner(FilterOwnerInput: FilterOwnerInput!): [Owner!]!
   findByIdOneOwner(id: Int!): Owner!
+}
+
+input FilterOwnerInput {
+  name: String
 }
 
 type Mutation {
