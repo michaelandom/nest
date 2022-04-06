@@ -25,4 +25,7 @@ export class AppService {
     );
     return 'User created successfully';
   }
+  getAnalytics() {
+    return this.analytics.send({ cmd: 'get-analytics' }, {});
+  }
 }

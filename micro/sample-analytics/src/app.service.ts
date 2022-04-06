@@ -16,4 +16,8 @@ export class AppService {
     });
     return 'User created successfully';
   }
+
+  getAnalytics() {
+    return this.analytics;
+  }
 }
