@@ -1,5 +1,5 @@
 import { ForbiddenError } from '@casl/ability';
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { AbilityFactory, Action } from 'src/ability/ability.factory';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -24,8 +24,8 @@ export class UserService {
     return user;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto, currontUser: User) {
-    const ability = this.abilityFactory.defineAbilityFor(currontUser);
+  update(id: number, updateUserDto: UpdateUserDto, currentUser: User) {
+    const ability = this.abilityFactory.defineAbilityFor(currentUser);
 
     const userUpdate = this.findOne(+id);
     ForbiddenError.from(ability).throwUnlessCan(Action.Update, userUpdate);

@@ -7,28 +7,21 @@ import {
   Param,
   Delete,
   ForbiddenException,
-  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { AbilityFactory, Action } from 'src/ability/ability.factory';
 import { ForbiddenError } from '@casl/ability';
-import { User } from './entities/user.entity';
 import {
   CheckAbility,
   CreateUserAbility,
   DeleteUserAbility,
   ReadUserAbility,
 } from 'src/ability/abilities.decorator';
-import { AbilitiesGuard } from 'src/ability/abilities.guard';
 
 @Controller('users')
 export class UserController {
-  constructor(
-    private readonly userService: UserService,
-    private abilityFactory: AbilityFactory,
-  ) {}
+  constructor(private readonly userService: UserService) {}
 
   @Post()
   @CheckAbility(new CreateUserAbility())
@@ -75,12 +68,6 @@ export class UserController {
       orgId: 1,
       isAdmin: true,
     };
-    // const ability = this.abilityFactory.defineAbilityFor(user);
-    // // const isAllowed = ability.can(Action.Create, 'User');
-    // // if (!isAllowed) {
-    // //   throw new ForbiddenException('only admin can create user');
-    // // }
-    // // this is the same as above
 
     try {
       return this.userService.update(+id, updateUserDto, user);
