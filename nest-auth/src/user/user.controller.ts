@@ -7,11 +7,21 @@ import {
   Param,
   Delete,
   ForbiddenException,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AbilityFactory, Action } from 'src/ability/ability.factory';
+import { ForbiddenError } from '@casl/ability';
+import { User } from './entities/user.entity';
+import {
+  CheckAbility,
+  CreateUserAbility,
+  DeleteUserAbility,
+  ReadUserAbility,
+} from 'src/ability/abilities.decorator';
+import { AbilitiesGuard } from 'src/ability/abilities.guard';
 
 @Controller('users')
 export class UserController {
@@ -21,35 +31,68 @@ export class UserController {
   ) {}
 
   @Post()
+  @CheckAbility(new CreateUserAbility())
   create(@Body() createUserDto: CreateUserDto) {
-    const user = {
-      id: 1,
-      isAdmin: false,
-    };
-    const ability = this.abilityFactory.defineAbilityFor(user);
-    const isAllowed = ability.can(Action.Create, 'User');
-    if (!isAllowed) {
-      throw new ForbiddenException();
-    }
+    // const user = {
+    //   id: 1,
+    //   orgId: 0,
+    //   isAdmin: false,
+    // };
+    // const ability = this.abilityFactory.defineAbilityFor(user);
+    // // const isAllowed = ability.can(Action.Create, 'User');
+    // // if (!isAllowed) {
+    // //   throw new ForbiddenException('only admin can create user');
+    // // }
+    // // this is the same as above
+
+    // try {
+    //   ForbiddenError.from(ability).throwUnlessCan(Action.Create, User);
+    //   return this.userService.create(createUserDto);
+    // } catch (error) {
+    //   if (error instanceof ForbiddenError) {
+    //     throw new ForbiddenException(error.message);
+    //   }
+    // }
     return this.userService.create(createUserDto);
   }
 
   @Get()
+  @CheckAbility(new ReadUserAbility())
   findAll() {
     return this.userService.findAll();
   }
 
   @Get(':id')
+  @CheckAbility(new ReadUserAbility())
   findOne(@Param('id') id: string) {
     return this.userService.findOne(+id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+    const user = {
+      id: 1,
+      orgId: 1,
+      isAdmin: true,
+    };
+    // const ability = this.abilityFactory.defineAbilityFor(user);
+    // // const isAllowed = ability.can(Action.Create, 'User');
+    // // if (!isAllowed) {
+    // //   throw new ForbiddenException('only admin can create user');
+    // // }
+    // // this is the same as above
+
+    try {
+      return this.userService.update(+id, updateUserDto, user);
+    } catch (error) {
+      if (error instanceof ForbiddenError) {
+        throw new ForbiddenException(error.message);
+      }
+    }
   }
 
   @Delete(':id')
+  @CheckAbility(new DeleteUserAbility())
   remove(@Param('id') id: string) {
     return this.userService.remove(+id);
   }

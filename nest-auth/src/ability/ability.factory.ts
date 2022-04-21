@@ -26,12 +26,17 @@ export class AbilityFactory {
     const { can, cannot, build } = new AbilityBuilder(
       Ability as AbilityClass<AppAbility>,
     );
-    can(Action.Manage, 'all');
     if (user.isAdmin) {
       can(Action.Manage, 'all'); //can manage all
+      cannot(Action.Manage, User, { orgId: { $ne: user.orgId } }).because(
+        'you can only manage users in your own organization',
+      ); //cannot manage other org
     } else {
       //   can(Action.Create, 'all'); //can create all
-      can(Action.Read, 'all'); //can read all
+      can(Action.Read, User); //can read all
+      cannot(Action.Create, User).because(
+        'your special message: only admins!!',
+      ); //cannot create all
     }
     return build({
       detectSubjectType: (item) =>
