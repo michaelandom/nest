@@ -37,7 +37,6 @@ export class UserController {
     // //   throw new ForbiddenException('only admin can create user');
     // // }
     // // this is the same as above
-
     // try {
     //   ForbiddenError.from(ability).throwUnlessCan(Action.Create, User);
     //   return this.userService.create(createUserDto);
